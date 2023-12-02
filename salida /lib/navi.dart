@@ -40,9 +40,6 @@ class _NaviState extends State<Navi> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            title : const Text('목적지를 클릭하여 네비게이션 기능을 사용하세요!', style:  TextStyle(fontSize: 18,),)
-          ),
           body: GoogleMap(
             initialCameraPosition: CameraPosition(
                 target: LatLng(_latitude, _longitude), zoom: 15),

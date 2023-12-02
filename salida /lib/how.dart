@@ -35,6 +35,9 @@ class _HowState extends State<How> {
       body:SingleChildScrollView(
         child: Column(
         children: [
+            Divider(
+              indent: 30,
+              endIndent: 30,),
             _productSelector(),
             _productPic(),
         ],
@@ -49,9 +52,9 @@ class _HowState extends State<How> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             //버튼에 자신의 번호, 선택된 번호, 아이콘, setState를 넘겨줌
-            ProductIcon(0, selectedIconNum, Icons.directions_bike, changeIcon),
-            ProductIcon(1, selectedIconNum, Icons.motorcycle, changeIcon),
-            ProductIcon(2, selectedIconNum, CupertinoIcons.car_detailed, changeIcon),
+            ProductIcon(0, selectedIconNum, "지진", changeIcon),
+            ProductIcon(1, selectedIconNum, "해일", changeIcon),
+            ProductIcon(2, selectedIconNum, "공습경보", changeIcon),
           ],
         ),
       );
@@ -77,7 +80,7 @@ class _HowState extends State<How> {
 class ProductIcon extends StatelessWidget {
   final int productNum;
   final int selectedIconNum;
-  final IconData mIcon;
+  final String mIcon;
   final Function changeIcon;
 
   const ProductIcon(
@@ -91,22 +94,23 @@ class ProductIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
+    return
+    Container(
+      width: 80,
       height: 35,
       decoration: BoxDecoration(
         // 선택된 버튼, 선택안된 버튼 배경색 삼항 연산자로 정의
         color: productNum == selectedIconNum ? Colors.blueAccent : Colors.grey,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: IconButton(
+      child: TextButton(
         onPressed: () {
           //받아온 change함수에 선택된 num 보내서 main에서 state 변경
           changeIcon(productNum);
         },
-        icon: Icon(
-          mIcon,
-          color: Colors.black,
+        child: Text(
+            mIcon,
+            style: const TextStyle(color: Colors.black),
         ),
       ),
     );

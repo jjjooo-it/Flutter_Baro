@@ -81,7 +81,8 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/logo.png
-    - assets/test.csv
+    - assets/shelter.csv
+    - assets/alarm.csv
     - assets/공습경보.png
     - assets/지진.png
     - assets/지진해일.png
