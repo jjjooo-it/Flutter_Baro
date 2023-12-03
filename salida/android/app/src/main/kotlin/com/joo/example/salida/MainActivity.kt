@@ -1,4 +1,4 @@
-package com.wonchihyeon.AttendanceCheck.attendancecheck
+package com.joo.example.salida
 
 import io.flutter.embedding.android.FlutterActivity
 

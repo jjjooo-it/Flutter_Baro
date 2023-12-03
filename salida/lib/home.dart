@@ -2,7 +2,6 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'navi.dart';
 import 'news.dart';
 import 'how.dart';
@@ -41,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.home),
             ),
             BottomNavigationBarItem(
-              label:'길찾기',
+              label:'길안내',
               icon: Icon(Icons.assistant_navigation),
             ),
             BottomNavigationBarItem(
@@ -83,7 +82,7 @@ class _Page1State extends State<Page1> {
     csvData = const CsvToListConverter().convert(result, eol: "\n");
   }
 
-  // 현재 위치 얻기 및 마커 추가
+  // 현재 위치 얻기
   Future<void> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
@@ -110,6 +109,7 @@ class _Page1State extends State<Page1> {
         // 권한이 허가된 상태
         String closeShelter ='';
         double closestDistance = double.maxFinite;
+
         if (snapshot.data == '위치 권한이 허가되었습니다.') {
           //대피소 마커 찍기
           markers = Set.from(
@@ -126,7 +126,9 @@ class _Page1State extends State<Page1> {
               return Marker(
                 markerId: MarkerId('${dataRow[0]}'),
                 position: LatLng(latitude, longitude),
-                infoWindow: InfoWindow(title: '${dataRow[4]}'),
+                infoWindow: InfoWindow(title: '${dataRow[4]}',
+                    snippet : '${dataRow[8]}'
+                ),
               );
             }).toList(),
           );
@@ -135,7 +137,9 @@ class _Page1State extends State<Page1> {
           Marker currentLocationMarker = Marker(
               markerId: const MarkerId('current_location'),
               position: LatLng(curLat, curLong),
-              infoWindow: const InfoWindow(title: '현재 위치'),
+              infoWindow: const InfoWindow(
+                  title: '현재 위치',
+              ),
               icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
           );
           markers.add(currentLocationMarker);
@@ -177,7 +181,7 @@ class _Page1State extends State<Page1> {
                             ),
                             child: const Text(
                               '🚨  [속보] 경북 김천 서 규모 3.2 지진 발생',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -199,7 +203,7 @@ class _Page1State extends State<Page1> {
                           text: '가장 가까운 대피소\n',
                           style: TextStyle(fontSize: 18),
                           children: <TextSpan>[
-                            TextSpan(text: closeShelter, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23)),
+                            TextSpan(text: closeShelter, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27)),
                           ],
                         ),
                       ),
@@ -237,3 +241,4 @@ class _Page1State extends State<Page1> {
     return '위치 권한이 허가되었습니다.';
   }
 }
+

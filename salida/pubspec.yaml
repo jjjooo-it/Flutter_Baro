@@ -1,4 +1,4 @@
-name: attendancecheck
+name: salida
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -48,8 +48,9 @@ dependencies:
   async: ^2.11.0
   location: ^5.0.3
   csv: ^5.1.1
-  google_map_polyline_new: ^0.3.0+2
   flutter_polyline_points: ^2.0.0
+  latlong2: ^0.9.0
+  google_map_polyline_new: ^0.3.0+2
 
 
 dev_dependencies:

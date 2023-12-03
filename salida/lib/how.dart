@@ -110,7 +110,8 @@ class ProductIcon extends StatelessWidget {
         },
         child: Text(
             mIcon,
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black,),
+
         ),
       ),
     );

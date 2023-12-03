@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:attendancecheck/home.dart';
+import 'package:salida/home.dart';
 
 void main(){
   runApp(
