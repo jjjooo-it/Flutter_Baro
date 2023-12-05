@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main(){
@@ -35,7 +34,7 @@ class _HowState extends State<How> {
       body:SingleChildScrollView(
         child: Column(
         children: [
-            Divider(
+            const Divider(
               indent: 30,
               endIndent: 30,),
             _productSelector(),

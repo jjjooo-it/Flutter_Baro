@@ -2,9 +2,11 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'navi.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'setting.dart';
 import 'news.dart';
 import 'how.dart';
+import 'distance.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,9 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
   var _index = 0;
   final _pages = [
     const Page1(),
-    const Navi(),
     const News(),
-    const How()
+    const How(),
+    const Setting(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,16 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.home),
             ),
             BottomNavigationBarItem(
-              label:'길안내',
-              icon: Icon(Icons.assistant_navigation),
-            ),
-            BottomNavigationBarItem(
-              label:'재난 뉴스',
+              label:'실시간 뉴스',
               icon: Icon(Icons.newspaper),
             ),
             BottomNavigationBarItem(
-              label:'대피 요령',
+              label:'행동 요령',
               icon: Icon(Icons.warning),
+            ),
+            BottomNavigationBarItem(
+              label:'설정',
+              icon: Icon(Icons.settings),
             ),
           ]
       ),
@@ -91,6 +93,23 @@ class _Page1State extends State<Page1> {
     curLong = position.longitude;
   }
 
+  //네비게이션에 현재 위치 파라미터로 넘기기
+  _launchURL() async {
+    if (curLong!= null) {
+      String url = 'https://example.com?lat=${curLat}&lon=${curLong}';
+      if (!await launchUrl(Uri.parse(url))) {
+        throw 'Could not launch $url';
+      }
+    }
+  }
+
+  //거리를 알려주는 페이지로 이동
+  void _navigateToDistancePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Distance()),
+    );
+  }
 
   //////////////////////////////////////////////////////////////
   @override
@@ -185,6 +204,25 @@ class _Page1State extends State<Page1> {
                             ),
                           ),
                         ),
+                        Positioned(
+                          top: 110,
+                          right: 28,
+                          width: 145,
+                          height: 35,
+                          child: ElevatedButton(
+                            onPressed: _navigateToDistancePage,
+                            child: Text('대피소 모아보기',  textAlign: TextAlign.center,),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey, // 배경색
+                              onPrimary: Colors.black, // 글자색
+                              elevation: 3, // 그림자 깊이
+                              shadowColor: Colors.black, // 그림자 색
+                              shape: RoundedRectangleBorder( // 네모난 모양
+                                borderRadius: BorderRadius.circular(8), // 약간 둥근 모서리
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -192,26 +230,52 @@ class _Page1State extends State<Page1> {
                     flex: 1,
                     child: Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(30),
+                      padding: EdgeInsets.fromLTRB(30,5,30,5),
                       margin: EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: Colors.grey, width: 1.3),
                       ),
-                      child: Text.rich(
-                        TextSpan(
-                          text: '가장 가까운 대피소\n',
-                          style: TextStyle(fontSize: 18),
-                          children: <TextSpan>[
-                            TextSpan(text: closeShelter, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27)),
-                          ],
-                        ),
+                      child: Row( // Row 위젯으로 변경
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 요소들을 양쪽 끝으로 정렬
+                        children: [
+                          Expanded( // 텍스트를 위한 Expanded 위젯
+                            child: Text.rich(
+                              TextSpan(
+                                text: '가장 가까운 대피소\n',
+                                style: TextStyle(fontSize: 18),
+                                children: <TextSpan>[
+                                  TextSpan(text: closeShelter, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27)),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Column( // 동그라미 버튼과 텍스트를 Column으로 감싸기
+                            mainAxisSize: MainAxisSize.min, // Column 크기 최소화
+                            children: [
+                              InkWell(
+                                onTap: _launchURL,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blueAccent,
+                                  ),
+                                  padding: EdgeInsets.all(14),
+                                  child: Icon(Icons.navigation, color: Colors.white),
+                                ),
+                              ),
+                              SizedBox(height: 5),//틈
+                              const Text('안내 시작', // 버튼 아래 텍스트 추가
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              )
-             );
+                ]
+          )
+        );
         }
               // 권한이 없는 상태
              return Center(
