@@ -29,7 +29,8 @@ class ShelterInfo {
 
 class _DistanceState extends State<Distance> {
   List<List<dynamic>>? csvData;
-  late double curLat = 37.32165076082689, curLong = 127.12672145303995;
+  late double curLat = 37.32165076082689,
+      curLong = 127.12672145303995;
   List<ShelterInfo> shelters = [];
 
   @override
@@ -40,8 +41,10 @@ class _DistanceState extends State<Distance> {
   }
 
   Future<void> loadCsvData() async {
-    var result = await DefaultAssetBundle.of(context).loadString("assets/shelter.csv");
-    List<List<dynamic>> rawData = const CsvToListConverter().convert(result, eol: "\n");
+    var result = await DefaultAssetBundle.of(context).loadString(
+        "assets/shelter.csv");
+    List<List<dynamic>> rawData = const CsvToListConverter().convert(
+        result, eol: "\n");
 
     // 첫 번째 행(헤더)을 제외하고 나머지 데이터 처리
     csvData = rawData.sublist(1);
@@ -49,7 +52,8 @@ class _DistanceState extends State<Distance> {
 
 
   Future<void> getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     setState(() {
       curLat = position.latitude;
       curLong = position.longitude;
@@ -62,7 +66,8 @@ class _DistanceState extends State<Distance> {
     for (var dataRow in csvData!) {
       double latitude = double.tryParse(dataRow[11].toString()) ?? 0.0;
       double longitude = double.tryParse(dataRow[10].toString()) ?? 0.0;
-      double distance = Geolocator.distanceBetween(curLat, curLong, latitude, longitude) / 1000;
+      double distance = Geolocator.distanceBetween(
+          curLat, curLong, latitude, longitude) / 1000;
 
       shelters.add(ShelterInfo(
         name: dataRow[4].toString(),
@@ -80,6 +85,17 @@ class _DistanceState extends State<Distance> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double appBarHeight = AppBar().preferredSize.height;
+    double statusBarHeight = MediaQuery
+        .of(context)
+        .padding
+        .top;
+    double itemHeight = (screenHeight - appBarHeight - statusBarHeight) / 7;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -91,17 +107,24 @@ class _DistanceState extends State<Distance> {
         title: const Text('우리 동네 대피소'),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: shelters.length,
-        itemBuilder: (context, index) {
-          var shelter = shelters[index];
-          return Card(
-            child: ListTile(
-              title: Text(shelter.name),
-              subtitle: Text('${shelter.address}\n거리: ${shelter.distance.toStringAsFixed(2)} km'),
-            ),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: ListView.builder(
+          itemCount: shelters.length,
+          itemBuilder: (context, index) {
+            var shelter = shelters[index];
+            return SizedBox(
+              height: itemHeight, // 각 항목의 높이를 화면 크기에 맞춰 설정
+              child: Card(
+                child: ListTile(
+                  title: Text(shelter.name),
+                  subtitle: Text('${shelter.address}\n거리: ${shelter.distance
+                      .toStringAsFixed(2)} km'),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

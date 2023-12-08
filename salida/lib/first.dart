@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'alarm.dart';
 import 'package:salida/home.dart';
 
 void main(){
@@ -18,6 +19,8 @@ class FirstPage extends StatefulWidget{
 }
 
 class _FirstPageState extends State<FirstPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,5 +61,8 @@ class _FirstPageState extends State<FirstPage> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     });
+    FlutterLocalNotification.init();
+    Future.delayed(const Duration(seconds: 3),
+        FlutterLocalNotification.requestNotificationPermission());
   }
 }

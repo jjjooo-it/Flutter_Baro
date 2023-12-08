@@ -70,6 +70,7 @@ class Page1 extends StatefulWidget {
 class _Page1State extends State<Page1> {
   List<List<dynamic>>? csvData;
   Set<Marker> markers = {};
+  double closeLat=0, closeLong=0;
   late double curLat=37.32165076082689, curLong=127.12672145303995;
 
   @override
@@ -94,12 +95,12 @@ class _Page1State extends State<Page1> {
   }
 
   //네비게이션에 현재 위치 파라미터로 넘기기
-  _launchURL() async {
-    if (curLong!= null) {
-      String url = 'https://example.com?lat=${curLat}&lon=${curLong}';
-      if (!await launchUrl(Uri.parse(url))) {
-        throw 'Could not launch $url';
-      }
+  Future<void> openMap(double latitude, double longitude) async {
+    var googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
     }
   }
 
@@ -140,6 +141,8 @@ class _Page1State extends State<Page1> {
               if(distance < closestDistance){
                 closestDistance = distance;
                 closeShelter = dataRow[4]; //현재 위치랑 가장 가까운 대피소 이름
+                closeLat = latitude;
+                closeLong = longitude;
               }
 
               return Marker(
@@ -207,11 +210,11 @@ class _Page1State extends State<Page1> {
                         Positioned(
                           top: 110,
                           right: 28,
-                          width: 145,
+                          width: 147,
                           height: 35,
                           child: ElevatedButton(
                             onPressed: _navigateToDistancePage,
-                            child: Text('대피소 모아보기',  textAlign: TextAlign.center,),
+                            child: Text('우리 동네 대피소',  textAlign: TextAlign.center,),
                             style: ElevatedButton.styleFrom(
                               primary: Colors.grey, // 배경색
                               onPrimary: Colors.black, // 글자색
@@ -254,9 +257,11 @@ class _Page1State extends State<Page1> {
                             mainAxisSize: MainAxisSize.min, // Column 크기 최소화
                             children: [
                               InkWell(
-                                onTap: _launchURL,
+                                onTap: () {
+                                  openMap(closeLat, closeLong); // 서울 시청의 위도와 경도
+                                },
                                 child: Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.blueAccent,
                                   ),

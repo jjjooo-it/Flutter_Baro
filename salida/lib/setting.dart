@@ -21,7 +21,10 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext){
     return Scaffold(
-
+      appBar: AppBar(
+        title: const Text('설정'),
+        centerTitle: true,
+      ),
     );
   }
 }

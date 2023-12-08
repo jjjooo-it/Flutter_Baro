@@ -1,205 +1,114 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_client_sse/flutter_client_sse.dart';
+import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
+import 'dart:convert';
+import 'dart:async';
 
-void main(){
-  runApp(
-      const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Alarm(),
-      )
-  );
-}
 
-class Alarm extends StatefulWidget {
-  const Alarm({Key? key}) : super(key: key);
+class FlutterLocalNotification {
+  static double lat = 0;
+  static double long = 0;
+  static double mag = 0;
 
-  @override
-  State<Alarm> createState() => _AlarmState();
-}
-
-class _AlarmState extends State<Alarm> {
-  int _counter = 0; // _counter 변수를 0으로 초기화
-  int _targetNumber = 10; // _targetNumber 변수를 10으로 초기화
-  Timer? _timer; // 타이머를 선언
-
-  @override
-  void initState() {
-    super.initState();
-    _requestNotificationPermissions(); // 알림 권한 요청
-  }
-  void _requestNotificationPermissions() async {
-    //알림 권한 요청
-    final status = await NotificationService().requestNotificationPermissions();
-    if (status.isDenied && context.mounted) {
-      showDialog(
-        // 알림 권한이 거부되었을 경우 다이얼로그 출력
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('알림 권한이 거부되었습니다.'),
-          content: Text('알림을 받으려면 앱 설정에서 권한을 허용해야 합니다.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('설정'), //다이얼로그 버튼의 죄측 텍스트
-              onPressed: () {
-                Navigator.of(context).pop();
-                openAppSettings(); //설정 클릭시 권한설정 화면으로 이동
-              },
-            ),
-            TextButton(
-              child: Text('취소'), //다이얼로그 버튼의 우측 텍스트
-              onPressed: () => Navigator.of(context).pop(), //다이얼로그 닫기
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //화면 구성
-    return Scaffold(
-      appBar: AppBar(title: const Text('쭈미로운 생활 푸시 알림 예제')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('타이머: $_counter'),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('알림 시간 입력(초) : '),
-                SizedBox(
-                  width: 60,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        _targetNumber = int.parse(value);
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _resetCounter,
-                  child: const Text('초기화'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: _toggleTimer,
-                  child: Text(_timer?.isActive == true ? '정지' : '시작'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _resetCounter() {
-    setState(() {
-      _counter = 0; // _counter 변수를 0으로 초기화
-    });
-  }
-
-  void _toggleTimer() {
-    // 타이머 시작/정지 기능
-    if (_timer?.isActive == true) {
-      _stopTimer();
-    } else {
-      _startTimer();
-    }
-  }
-
-  void _startTimer() {
-    //타이머 시작
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        _counter++;
-        if (_counter == _targetNumber) {
-          NotificationService().showNotification(_targetNumber);
-          _stopTimer();
-        }
-      });
-    });
-  }
-
-  void _stopTimer() {
-    //타이머 정지
-    _timer?.cancel();
-  }
-}
-///////////////////////////////////////////////////////////
-//알림 권한 및 상세 정보
-class NotificationService {
-  static final NotificationService _instance = NotificationService._();
-  factory NotificationService() {
-    return _instance;
-  }
-  NotificationService._();
-
-  // 로컬 푸시 알림을 사용하기 위한 플러그인 인스턴스 생성
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotification._();
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  static init() async {
+    _listenToServerEvents();
+    AndroidInitializationSettings androidInitializationSettings =
+    const AndroidInitializationSettings('mipmap/ic_launcher');
+    DarwinInitializationSettings iosInitializationSettings =
+    const DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
 
-  // 초기화 작업을 위한 메서드 정의
-  Future<void> init() async {
-    // 알림을 표시할 때 사용할 로고를 지정
-    const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // 안드로이드 플랫폼에서 사용할 초기화 설정
-    const InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
-
-    // 로컬 푸시 알림을 초기화
+    InitializationSettings initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+    );
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
+  static void updateData(double newLat, double newLong, double newMag) {
+    lat = newLat;
+    long = newLong;
+    mag = newMag;
+    showNotification(lat, long, mag);
+  }
 
-  // 푸시 알림 생성
-  Future<void> showNotification(int targetNumber) async {
-    // 푸시 알림의 ID
-    const int notificationId = 0;
-    // 알림 채널 설정값 구성
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
-      'counter_channel', // 알림 채널 ID
-      'Counter Channel', // 알림 채널 이름
-      channelDescription:
-      'This channel is used for counter-related notifications',
-      // 알림 채널 설명
-      importance: Importance.high, // 알림 중요도
-    );
+  static late StreamSubscription _sseSubscription;
+  static bool _isConnected = false;
 
-    // 알림 상세 정보 설정
-    const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
+  static void _listenToServerEvents() {
+    if(!_isConnected) {
+      _isConnected= true;
+      _sseSubscription = SSEClient.subscribeToSSE(
+          method: SSERequestType.GET,
+          url: 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/connect',
+          header: {
+            "Cookie": '',
+            "Accept": "text/event-stream",
+            "Cache-Control": "",
+          }
+      ).listen((event) {
+        print("이벤트 리슨");
+        var data = json.decode(event.data!);
+        updateData(data['latitude'], data['longitude'], data['magnitude']);
+        showNotification(lat, long, mag); // 푸시 알림 전송
+      },
+        onError: (error) {
+          _isConnected= false;
+          // 에러 발생 시
+          print('SSE 연결 오류: $error');
+          _reconnect(); // 재연결을 시도합니다.
+        },
+        onDone: () {
+          _isConnected= false;
+          // 스트림이 종료될 때
+          print('SSE 연결 종료됨');
+          _reconnect(); // 재연결을 시도합니다.
+        },
+      );
+    }
+}
+static void _reconnect() {
+  print('재연결을 시도합니다...');
+  _sseSubscription.cancel();
+  _isConnected = false;
+  _listenToServerEvents();
+}
 
-
-    // 알림 보이기
-    await flutterLocalNotificationsPlugin.show(
-      notificationId, // 알림 ID
-      '목표 도달', // 알림 제목
-      '$targetNumber 회 눌렀습니다!', // 알림 메시지
-      notificationDetails, // 알림 상세 정보
+  static requestNotificationPermission() {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
     );
   }
 
-  // 푸시 알림 권한 요청
-  Future<PermissionStatus> requestNotificationPermissions() async {
-    final status = await Permission.notification.request();
-    return status;
+  static Future<void> showNotification(double lat, double long,
+      double mag) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails('channel id', 'channel name',
+        channelDescription: 'channel description',
+        importance: Importance.max,
+        priority: Priority.max,
+        showWhen: false);
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails,
+        iOS: DarwinNotificationDetails(badgeNumber: 1));
+
+    await flutterLocalNotificationsPlugin.show(
+        0, //알림 id
+        '🚨지진 알림', //알림 제목
+        '위도: $lat, 경도: $long, 진도: $mag', //알림 내용
+        notificationDetails);
   }
 }
