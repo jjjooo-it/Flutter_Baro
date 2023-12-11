@@ -1,8 +1,12 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_client_sse/flutter_client_sse.dart';
+import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'dart:async';
 import 'setting.dart';
 import 'news.dart';
 import 'how.dart';
@@ -77,6 +81,7 @@ class _Page1State extends State<Page1> {
   void initState(){
     loadCsvData();
     getCurrentLocation();
+    _listenToServerEvents();
   }
 
   //csv에서 데이터 가져오기
@@ -110,6 +115,31 @@ class _Page1State extends State<Page1> {
       context,
       MaterialPageRoute(builder: (context) => Distance()),
     );
+  }
+  double lat = 0;
+  double long = 0;
+  double mag = 0;
+  String name ="";
+  String myMessage = "";
+
+  void updateData(double newLat, double newLong, double newMag) {
+    lat = newLat;
+    long = newLong;
+    mag = newMag;
+  }
+  void _listenToServerEvents() {
+    SSEClient.subscribeToSSE(
+      method: SSERequestType.GET,
+      url: 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/connect',
+      header: {
+        "Cookie": '',
+        "Accept": "text/event-stream",
+        "Cache-Control": ""
+      },
+    ).listen((event) {
+      var data = json.decode(event.data!);
+      updateData(data['latitude'], data['longitude'], data['magnitude']);
+    });
   }
 
   //////////////////////////////////////////////////////////////
@@ -201,8 +231,8 @@ class _Page1State extends State<Page1> {
                                 ),
                               ],
                             ),
-                            child: const Text(
-                              '🚨  [속보] 경북 김천 서 규모 3.2 지진 발생',
+                            child: Text(
+                            lat==0? "재난 발생 시 여기에 표시 됩니다.": "🚨진도 ${mag}지진이 위도:${mag},경도:${mag}에 발생했습니다",
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
