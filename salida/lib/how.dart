@@ -160,8 +160,8 @@ class ProductIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return
       Container(
-        width: 80,
-        height: 35,
+        width: 105,
+        height: 40,
         decoration: BoxDecoration(
           // 선택된 버튼, 선택안된 버튼 배경색 삼항 연산자로 정의
           color: productNum == selectedIconNum ? Colors.blueAccent : Colors
@@ -174,7 +174,7 @@ class ProductIcon extends StatelessWidget {
           },
           child: Text(
             mIcon,
-            style: const TextStyle(color: Colors.black,),
+            style: const TextStyle(color: Colors.black,fontSize: 16),
 
           ),
         ),

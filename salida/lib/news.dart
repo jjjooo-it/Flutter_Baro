@@ -66,7 +66,7 @@ class _NewsPageState extends State<News> {
 
   // 마지막 페이지로 이동
   void _goToLastPage() {
-    _pageController.jumpToPage((myNews.length / 3).ceil() - 1);
+    _pageController.jumpToPage((myNews.length / 5).ceil() - 1);
   }
 
   @override
@@ -82,10 +82,10 @@ class _NewsPageState extends State<News> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: (myNews.length / 3).ceil(),
+              itemCount: (myNews.length / 5).ceil(),
               itemBuilder: (context, pageIndex) {
-                int startIndex = pageIndex * 3;
-                int endIndex = startIndex + 3;
+                int startIndex = pageIndex * 5;
+                int endIndex = startIndex + 5;
                 List<dynamic> pageItems = myNews.sublist(
                     startIndex, endIndex > myNews.length ? myNews.length : endIndex);
 
@@ -129,6 +129,10 @@ class _NewsPageState extends State<News> {
                                         label: Text(newsItem['emergencyType']=='earthquake' ? '지진' : ''),
                                         backgroundColor: Colors.redAccent,
                                         labelStyle: TextStyle(color: Colors.white),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                                          side: BorderSide(color: Colors.red), // Border color
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -156,7 +160,7 @@ class _NewsPageState extends State<News> {
                   onPressed: _goToFirstPage,
                 ),
                 Text(
-                  '페이지 ${_currentPage + 1} / ${(myNews.length / 3).ceil()}',
+                  '페이지 ${_currentPage + 1} / ${(myNews.length / 5).ceil()}',
                   style: TextStyle(fontSize: 16),
                 ),
                 IconButton(

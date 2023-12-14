@@ -101,7 +101,7 @@ class _Page1State extends State<Page1> {
 
   //네비게이션에 현재 위치 파라미터로 넘기기
   Future<void> openMap(double latitude, double longitude) async {
-    var googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    var googleUrl = 'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
     if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
     } else {
@@ -120,13 +120,21 @@ class _Page1State extends State<Page1> {
   double long = 0;
   double mag = 0;
   String name ="";
-  String myMessage = "";
+  String myMessage = "재난 발생 시 여기에 표시 됩니다.";
+  String place = "";
 
-  void updateData(double newLat, double newLong, double newMag) {
+  void updateData(double newLat, double newLong, String newloc, double newMag) {
     lat = newLat;
     long = newLong;
     mag = newMag;
+    place = newloc;
+
+    setState(() {
+      //위도 경도를 위치로 변경
+      myMessage = "🚨진도 ${mag}지진이 ${place}에 발생했습니다";
+    });
   }
+
   void _listenToServerEvents() {
     SSEClient.subscribeToSSE(
       method: SSERequestType.GET,
@@ -138,7 +146,7 @@ class _Page1State extends State<Page1> {
       },
     ).listen((event) {
       var data = json.decode(event.data!);
-      updateData(data['latitude'], data['longitude'], data['magnitude']);
+      updateData(data['latitude'], data['longitude'],data['address'], data['magnitude']);
     });
   }
 
@@ -196,6 +204,24 @@ class _Page1State extends State<Page1> {
           );
           markers.add(currentLocationMarker);
 
+          //지진 발생 위치 마커 찍기
+          Marker loc =  Marker(
+            markerId: MarkerId("지진 발생 위치"),
+            position: LatLng(lat,long),
+            infoWindow: InfoWindow(title : "지진 발생 위치"),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          );
+          markers.add(loc);
+
+          //지진 발생 위치에 원 표시
+          Set<Circle> circles = {Circle(
+            circleId: CircleId("id"),
+            center: LatLng(lat,long),
+            fillColor: Colors.black54, // 원의 색상
+            radius: 10000, // 원의 반지름 (미터 단위)
+            strokeColor: Colors.black54, // 원의 테두리 색
+            strokeWidth: 1, // 원의 두께
+          )};
           //////////////////////////////////////////////////////////////
           return Scaffold(
               body: Column(
@@ -211,13 +237,14 @@ class _Page1State extends State<Page1> {
                           ),
                           markers: markers,
                           myLocationEnabled: true,
+                          circles: circles,
                         ),
                         Positioned(
                           top: 48,
                           left: 20,
                           right: 20,
                           child: Container(
-                            height: 45,
+                            height: 55,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -231,22 +258,21 @@ class _Page1State extends State<Page1> {
                                 ),
                               ],
                             ),
-                            child: Text(
-                            lat==0? "재난 발생 시 여기에 표시 됩니다.": "🚨진도 ${mag}지진이 위도:${mag},경도:${mag}에 발생했습니다",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            child: Text(myMessage,
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
                         Positioned(
-                          top: 110,
+                          top: 115,
                           right: 28,
-                          width: 147,
+                          width: 153,
                           height: 35,
                           child: ElevatedButton(
                             onPressed: _navigateToDistancePage,
                             child: Text('우리 동네 대피소',  textAlign: TextAlign.center,),
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.grey, // 배경색
+                              primary: Colors.yellowAccent, // 배경색
                               onPrimary: Colors.black, // 글자색
                               elevation: 3, // 그림자 깊이
                               shadowColor: Colors.black, // 그림자 색
@@ -288,7 +314,7 @@ class _Page1State extends State<Page1> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  openMap(closeLat, closeLong); // 서울 시청의 위도와 경도
+                                  openMap(closeLat, closeLong);
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(

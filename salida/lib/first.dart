@@ -29,7 +29,7 @@ class _FirstPageState extends State<FirstPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("SALIDA",
+            const Text("BARO",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 70,

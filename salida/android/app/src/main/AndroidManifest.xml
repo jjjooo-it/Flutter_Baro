@@ -8,7 +8,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Provide required visibility configuration for API level 30 and above -->
@@ -63,9 +65,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-       <!-- 구글 지도 API 키 등록 -->
-       <meta-data
-           android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyBNJvr3k1vAcjxMSKn7Fu4bxXrLLUM7BwQ" />
+        <meta-data
+            android:name= "com.google.android.geo.API_KEY"
+            android:value="AIzaSyDXrGZwSs-D8_H2uizZGO1BCgAixRt5oPw"
+            />
     </application>
 </manifest>
