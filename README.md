@@ -21,27 +21,23 @@
 <table>
   <tr>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/94f06ee8-e778-4a97-9ef2-7084445b0cdb"></td>
-    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/135d364f-93c7-440b-a59b-6e0048e97f37"></td>
-    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/be99589c-ae22-42fe-ac1e-1cdc4283d3e3"></td>
-    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/726b2edf-e802-42b2-8391-db419b5cb41f"></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/a1b3b989-13c7-4ca5-b8fc-bacbecc0cbe2"></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/2db6bf32-e80f-485b-85d7-f5cf46c45fb6"></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/2db98ab6-ed0a-4c2b-9785-4e7cef8f404a"></td>
+    
+    
   </tr>
   <tr>
-    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/2db6bf32-e80f-485b-85d7-f5cf46c45fb6"></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/be99589c-ae22-42fe-ac1e-1cdc4283d3e3"></td>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/909550f7-f245-4322-acad-1b569251126f"></td>
-    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/a1b3b989-13c7-4ca5-b8fc-bacbecc0cbe2"></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/726b2edf-e802-42b2-8391-db419b5cb41f"></td>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/2db98ab6-ed0a-4c2b-9785-4e7cef8f404a"></td>
   </tr>
   <tr>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/35d5a86f-17d0-4a6f-9af1-a8f3e46a3b3a"></td>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/1c695c51-0cf5-47a4-8cba-da8b33061fe1"></td>
     <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/ac76b47f-f4e2-4596-a638-bdb1ebe01f73"></td>
-    <td><img src="image12_url" width="100" /></td>
-  </tr>
-  <tr>
-    <td><img src="image13_url" width="100" /></td>
-    <td><img src="image14_url" width="100" /></td>
-    <td><img src="image15_url" width="100" /></td>
-    <td><img src="image16_url" width="100" /></td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/135d364f-93c7-440b-a59b-6e0048e97f37"></td>
   </tr>
 </table>
 
