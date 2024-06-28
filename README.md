@@ -20,7 +20,7 @@
 ## 📱주요 화면
 <table>
   <tr>
-    <td>![Screenshot_20231214-143003_One UI Home](https://github.com/DK-Mobile-Platform/Front/assets/94334477/94f06ee8-e778-4a97-9ef2-7084445b0cdb)</td>
+    <td><img src="https://github.com/DK-Mobile-Platform/Front/assets/94334477/94f06ee8-e778-4a97-9ef2-7084445b0cdb"></td>
     <td>![Screenshot_20231214-142848](https://github.com/DK-Mobile-Platform/Front/assets/94334477/135d364f-93c7-440b-a59b-6e0048e97f37)</td>
     <td>![Screenshot_20231214-142824](https://github.com/DK-Mobile-Platform/Front/assets/94334477/be99589c-ae22-42fe-ac1e-1cdc4283d3e3)</td>
     <td>![Screenshot_20231214-142831](https://github.com/DK-Mobile-Platform/Front/assets/94334477/726b2edf-e802-42b2-8391-db419b5cb41f)</td>
